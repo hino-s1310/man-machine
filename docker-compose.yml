@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  man-machine:
+    build: .
+    container_name: man-machine-app
+    ports:
+      - "8501:8501"
+    volumes:
+      # テスト結果データを永続化
+      - ./reports/data:/app/reports/data
+      # テストケースファイルを永続化
+      - ./robots:/app/robots
+      # ログファイルを永続化
+      - ./logs:/app/logs
+    environment:
+      - PYTHONPATH=/app
+      - DISPLAY=:99
+      # Streamlit設定
+      - STREAMLIT_SERVER_PORT=8501
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+      - STREAMLIT_SERVER_HEADLESS=true
+      - STREAMLIT_SERVER_ENABLE_CORS=false
+      - STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION=false
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - man-machine-network
+
+  # ヘルスチェック用のcurlコンテナ（オプション）
+  healthcheck:
+    image: curlimages/curl:latest
+    container_name: man-machine-healthcheck
+    depends_on:
+      - man-machine
+    command: >
+      sh -c "
+        echo 'Waiting for man-machine to be ready...'
+        until curl -f http://man-machine:8501/_stcore/health; do
+          sleep 5
+        done
+        echo 'man-machine is ready!'
+      "
+    networks:
+      - man-machine-network
+
+networks:
+  man-machine-network:
+    driver: bridge
+
+volumes:
+  man-machine-data:
+    driver: local

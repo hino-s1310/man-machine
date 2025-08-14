@@ -1,0 +1,22 @@
+# Robot Framework関連
+robotframework>=6.0
+robotframework-seleniumlibrary>=6.0
+robotframework-selenium2library>=3.0
+
+# Web自動化関連
+selenium>=4.0
+webdriver-manager>=4.0
+
+# Streamlit関連
+streamlit>=1.28.0
+
+# データ処理・可視化関連
+pandas>=2.0.0
+plotly>=5.0.0
+
+# XML処理関連
+xmltodict>=0.13.0
+
+# その他の依存関係
+requests>=2.31.0
+urllib3>=2.0.0

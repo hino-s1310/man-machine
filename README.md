@@ -1,0 +1,2 @@
+# man-machine
+Robot Frameworkのテスト実行結果をStreamlitで可視化するプロジェクト
